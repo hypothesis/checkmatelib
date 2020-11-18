@@ -5,11 +5,11 @@ from future.utils import raise_from  # Python 2.7 compatibility
 from requests.exceptions import ConnectionError as ConnectionError_
 from requests.exceptions import HTTPError, Timeout
 
-from checkmatelib.exceptions import CheckmateException
 from checkmatelib._response import BlockResponse
-
+from checkmatelib.exceptions import CheckmateException
 
 # pylint: disable=too-few-public-methods
+
 
 class CheckmateClient:
     """A client for the Checkmate URL testing service."""

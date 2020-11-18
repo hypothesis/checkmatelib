@@ -1,0 +1,15 @@
+{
+    "project_name": "Checkmate Client Library",
+    "description": "Tools for interacting with the Checkmate URL checking service",
+    "project_slug": "checkmatelib",
+    "pkg_name": "checkmatelib",
+    "options": {
+        "disable_replay": [
+            "README.md",
+            "setup.cfg",
+            "src/checkmatelib/__init__.py",
+            "Makefile"
+        ]
+    },
+    "_template": "gh:hypothesis/h-cookiecutter-pypackage"
+}

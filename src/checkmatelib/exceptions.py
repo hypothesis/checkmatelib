@@ -2,4 +2,4 @@
 
 
 class CheckmateException(Exception):
-    """Indicate that something went wrong with a Checkmate request."""
+    """A problem with a Checkmate request."""

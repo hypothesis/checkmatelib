@@ -8,7 +8,10 @@
             "README.md",
             "setup.cfg",
             "src/checkmatelib/__init__.py",
-            "Makefile"
+            "Makefile",
+            "MANIFEST.in",
+            ".python-version",
+            "tests/conftest.py"
         ]
     },
     "_template": "gh:hypothesis/h-cookiecutter-pypackage"

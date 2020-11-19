@@ -40,9 +40,7 @@ initialrelease: python
 
 .PHONY: test
 test: python
-    # We have to change either tox or this file to be different from the
-    # cookiecutter to support python 2. This seems like the easiest thing to do
-	@tox -qe py36-tests,py27-tests
+	@tox -qe tests,py27-tests
 
 .PHONY: coverage
 coverage: python

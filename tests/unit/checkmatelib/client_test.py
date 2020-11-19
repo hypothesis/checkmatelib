@@ -1,9 +1,8 @@
 import pytest
-from requests.exceptions import ConnectionError as ConnectionError_
 from requests.exceptions import HTTPError, InvalidURL, Timeout
 
 from checkmatelib.client import CheckmateClient
-from checkmatelib.exceptions import CheckmateException
+from checkmatelib.exceptions import BadURL, CheckmateException, CheckmateServiceError
 
 
 class TestCheckmateClient:
@@ -32,18 +31,18 @@ class TestCheckmateClient:
     @pytest.mark.parametrize(
         "exception,expected",
         (
-            (ConnectionError_, CheckmateException),
-            (Timeout, CheckmateException),
-            (InvalidURL, InvalidURL),
+            (Timeout, CheckmateServiceError),
+            (InvalidURL, BadURL),
+            (HTTPError, CheckmateException),
         ),
     )
     def test_failed_connection(self, client, requests, exception, expected):
-        requests.get.side_effect = exception
+        requests.get.side_effect = exception("Something bad")
         with pytest.raises(expected):
             client.check_url("http://bad.example.com")
 
     def test_failed_response(self, client, response):
-        response.raise_for_status.side_effect = HTTPError
+        response.raise_for_status.side_effect = HTTPError("Something bad")
 
         with pytest.raises(CheckmateException):
             client.check_url("http://bad.example.com")

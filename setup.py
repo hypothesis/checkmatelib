@@ -69,7 +69,7 @@ class Package:
             start = 'v' + self.version + '.'
             if not build.startswith(start):
                 raise ValueError(
-                    'Expected build to be "%s*", got "%s"'.format(start, build))
+                    'Expected build to be "{}*", got "{}"'.format(start, build))
 
             return self.version + "." + build[len(start):]
 

@@ -5,6 +5,7 @@ try:
 except ImportError:
     import mock  # Python 2.7 compatibility
 
+
 import pytest
 
 

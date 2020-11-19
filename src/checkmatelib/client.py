@@ -2,11 +2,9 @@
 
 import requests
 from future.utils import raise_from  # Python 2.7 compatibility
-from requests.exceptions import ConnectionError as ConnectionError_
-from requests.exceptions import HTTPError, Timeout
 
 from checkmatelib._response import BlockResponse
-from checkmatelib.exceptions import CheckmateException
+from checkmatelib.exceptions import CheckmateServiceError, handles_request_errors
 
 # pylint: disable=too-few-public-methods
 
@@ -21,25 +19,23 @@ class CheckmateClient:
         """
         self._host = host.rstrip("/")
 
+    @handles_request_errors
     def check_url(self, url):
         """Check a URL for reasons to block.
 
         :param url: URL to check
-        :raises CheckmateException: With any issue with the Checkmate service
+        :raises BadURL: If the provided URL is bad
+        :raises CheckmateServiceError: If there is a problem contacting the service
+        :raises CheckmateException: For any other issue with the Checkmate service
         :return: None if the URL is fine or a `CheckmateResponse` if there are
            reasons to block the URL.
         """
-        try:
-            response = requests.get(
-                self._host + "/api/check", params={"url": url}, timeout=1
-            )
-        except (ConnectionError_, Timeout) as err:
-            raise_from(CheckmateException("Cannot connect to service"), err)
 
-        try:
-            response.raise_for_status()
-        except HTTPError as err:
-            raise_from(CheckmateException("Unexpected response from service"), err)
+        response = requests.get(
+            self._host + "/api/check", params={"url": url}, timeout=1
+        )
+
+        response.raise_for_status()
 
         if response.status_code == 204:
             return None
@@ -48,4 +44,4 @@ class CheckmateClient:
             return BlockResponse(response.json())
 
         except ValueError as err:
-            raise_from(CheckmateException("Unprocessable JSON response"), err)
+            raise_from(CheckmateServiceError("Unprocessable JSON response"), err)

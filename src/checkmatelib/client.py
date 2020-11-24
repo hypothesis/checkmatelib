@@ -5,7 +5,7 @@ from future.utils import raise_from  # Python 2.7 compatibility
 
 try:
     from urllib.parse import urlparse
-except ImportError:
+except ImportError:  # pragma: no cover
     # Python 2.7 compatibility
     from urlparse import urlparse
 

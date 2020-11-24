@@ -3,8 +3,18 @@
 import requests
 from future.utils import raise_from  # Python 2.7 compatibility
 
+try:
+    from urllib.parse import urlparse
+except ImportError:
+    # Python 2.7 compatibility
+    from urlparse import urlparse
+
 from checkmatelib._response import BlockResponse
-from checkmatelib.exceptions import CheckmateServiceError, handles_request_errors
+from checkmatelib.exceptions import (
+    BadURL,
+    CheckmateServiceError,
+    handles_request_errors,
+)
 
 # pylint: disable=too-few-public-methods
 
@@ -31,6 +41,8 @@ class CheckmateClient:
            reasons to block the URL.
         """
 
+        self._validate_url(url)
+
         response = requests.get(
             self._host + "/api/check", params={"url": url}, timeout=1
         )
@@ -45,3 +57,24 @@ class CheckmateClient:
 
         except ValueError as err:
             raise_from(CheckmateServiceError("Unprocessable JSON response"), err)
+
+    @classmethod
+    def _validate_url(cls, url):
+        """Check a URL for errors before we send it off to checkmate.
+
+        This is intended to catch mistakes that will inevitably result in a
+        bad request response.
+
+        :param url: URL to check
+        :raises BadURL: If the URL has a problem that would make the call fail
+        """
+        parts = urlparse(url)
+
+        # URL parse gets confused with bare domains like: 'google.com/path'
+        # and thinks the whole thing is a path, so we should try again with a
+        # fake scheme to determine if there really is a domain
+        if not parts.scheme and not parts.netloc:
+            parts = urlparse("http://" + url.lstrip("/"))
+
+        if not parts.netloc:
+            raise BadURL("The provided url: '{}' has no domain".format(url))

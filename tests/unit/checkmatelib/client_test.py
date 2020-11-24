@@ -53,6 +53,11 @@ class TestCheckmateClient:
         with pytest.raises(CheckmateException):
             client.check_url("http://bad.example.com")
 
+    @pytest.mark.parametrize("url", ("http://", "/", "http:///", "http:///path", "/"))
+    def test_it_with_bad_urls(self, client, url):
+        with pytest.raises(BadURL):
+            client.check_url(url)
+
     @pytest.fixture
     def client(self):
         return CheckmateClient(host="http://checkmate.example.com/")

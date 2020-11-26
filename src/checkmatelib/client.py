@@ -12,6 +12,8 @@ from checkmatelib.exceptions import CheckmateServiceError, handles_request_error
 class CheckmateClient:
     """A client for the Checkmate URL testing service."""
 
+    MAX_URL_LENGTH = 2000
+
     def __init__(self, host):
         """Initialise a client for contacting the Checkmate service.
 
@@ -30,6 +32,9 @@ class CheckmateClient:
         :return: None if the URL is fine or a `CheckmateResponse` if there are
            reasons to block the URL.
         """
+
+        # Truncate extremely long URLs so we don't get 400's and fail open
+        url = url[: self.MAX_URL_LENGTH]
 
         response = requests.get(
             self._host + "/api/check", params={"url": url}, timeout=1

@@ -53,6 +53,17 @@ class TestCheckmateClient:
         with pytest.raises(CheckmateException):
             client.check_url("http://bad.example.com")
 
+    def test_it_truncates_very_long_urls(self, client, requests):
+        very_long_url = "http://" + "a" * 10000
+
+        client.check_url(very_long_url)
+
+        _, kwargs = requests.get.call_args
+
+        called_url = kwargs["params"]["url"]
+        assert len(called_url) == client.MAX_URL_LENGTH
+        assert called_url == very_long_url[: client.MAX_URL_LENGTH]
+
     @pytest.fixture
     def client(self):
         return CheckmateClient(host="http://checkmate.example.com/")

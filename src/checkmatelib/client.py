@@ -22,13 +22,16 @@ class CheckmateClient:
         self._host = host.rstrip("/")
 
     @handles_request_errors
-    def check_url(self, url):
+    def check_url(self, url, allow_all=False):
         """Check a URL for reasons to block.
 
         :param url: URL to check
+        :param allow_all: If True, bypass Checkmate's allow-list
+
         :raises BadURL: If the provided URL is bad
         :raises CheckmateServiceError: If there is a problem contacting the service
         :raises CheckmateException: For any other issue with the Checkmate service
+
         :return: None if the URL is fine or a `CheckmateResponse` if there are
            reasons to block the URL.
         """
@@ -36,9 +39,12 @@ class CheckmateClient:
         # Truncate extremely long URLs so we don't get 400's and fail open
         url = url[: self.MAX_URL_LENGTH]
 
-        response = requests.get(
-            self._host + "/api/check", params={"url": url}, timeout=1
-        )
+        params = {"url": url}
+
+        if allow_all:
+            params["allow_all"] = True
+
+        response = requests.get(self._host + "/api/check", params=params, timeout=1)
 
         response.raise_for_status()
 

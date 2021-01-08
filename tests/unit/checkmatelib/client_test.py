@@ -28,6 +28,11 @@ class TestCheckmateClient:
         assert hits == BlockResponse.return_value
         BlockResponse.assert_called_once_with(response.json.return_value)
 
+    def test_allow_all(self, client, requests):
+        client.check_url("http://bad.example.com", allow_all=True)
+
+        assert requests.get.call_args[1]["params"].get("allow_all")
+
     @pytest.mark.parametrize(
         "exception,expected",
         (

@@ -27,6 +27,11 @@ class BlockResponse:
         self._payload = payload
 
     @property
+    def presentation_url(self):
+        """Get a URL to display this error in HTML."""
+        return self._payload["links"]["html"]
+
+    @property
     def reason_codes(self):
         """Get the list of reason codes."""
         return [reason["id"] for reason in self._payload["data"]]

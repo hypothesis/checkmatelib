@@ -14,6 +14,7 @@ class TestBlockResponse:
         response = BlockResponse(payload)
 
         assert response.reason_codes == ["reason_1", "reason_2"]
+        assert response.presentation_url == payload["links"]["html"]
 
     @pytest.mark.parametrize(
         "payload",
@@ -41,5 +42,9 @@ class TestBlockResponse:
         return {
             "data": [{"id": "reason_1", "noise": "random_noise"}, {"id": "reason_2"}],
             "meta": {"maxSeverity": "very_bad", "noise": "random_noise"},
+            "links": {
+                "html": "http://checkmate.example.com/display_error",
+                "noise": "random_noise",
+            },
             "noise": "random_noise",
         }

@@ -5,7 +5,7 @@
     "$comment": "This schema only enforces the parts we care about and lets the rest drift.",
 
     "type": "object",
-    "required": ["data"],
+    "required": ["data", "links"],
     "additionalProperties": true,
 
     "properties": {
@@ -22,6 +22,15 @@
                     "id": {"type": "string"}
                 }
             }
+        },
+        "links": {
+            "type": "object",
+            "required": ["html"],
+            "additionalProperties": true,
+
+            "properties": {
+                "html": {"type": "string", "format": "uri"}
+            }
         }
     },
 
@@ -34,7 +43,10 @@
                     "attributes": {"severity": "mandatory"}
                 }
             ],
-            "meta": {"maxSeverity": "mandatory"}
+            "meta": {"maxSeverity": "mandatory"},
+            "links": {
+                "html": "http://checkmate.example.com/view_error"
+            }
         }
     ]
 }

@@ -10,7 +10,7 @@ from checkmatelib import CheckmateClient, CheckmateException
 
 client = CheckmateClient("http://checkmate.example.com")
 try:
-    hits = client.check_url("http://bad.example.com")
+    hits = client.check_url("http://bad.example.com", "YOUR_CHECKMATE_API_KEY")
    
 except CheckmateException:
     ...   # To block or not to block?

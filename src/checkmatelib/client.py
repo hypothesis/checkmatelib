@@ -14,12 +14,17 @@ class CheckmateClient:
 
     MAX_URL_LENGTH = 2000
 
-    def __init__(self, host):
+    def __init__(self, host, api_key):
         """Initialise a client for contacting the Checkmate service.
 
+        CHECKMATE_API_KEY must be present to configure authentication
+
         :param host: The host including scheme, for the Checkmate service
+        :param api_key: API key for Checkmate
         """
         self._host = host.rstrip("/")
+
+        self._api_key = api_key
 
     @handles_request_errors
     def check_url(self, url, allow_all=False):
@@ -44,7 +49,12 @@ class CheckmateClient:
         if allow_all:
             params["allow_all"] = True
 
-        response = requests.get(self._host + "/api/check", params=params, timeout=1)
+        response = requests.get(
+            self._host + "/api/check",
+            params=params,
+            timeout=1,
+            auth=(self._api_key,) if self._api_key else None,
+        )
 
         response.raise_for_status()
 

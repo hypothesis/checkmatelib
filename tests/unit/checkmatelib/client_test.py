@@ -23,6 +23,7 @@ class TestCheckmateClient:
             "http://checkmate.example.com/api/check",
             params={"url": "http://bad.example.com"},
             timeout=1,
+            auth=("API_KEY",),
         )
 
         assert hits == BlockResponse.return_value
@@ -71,7 +72,7 @@ class TestCheckmateClient:
 
     @pytest.fixture
     def client(self):
-        return CheckmateClient(host="http://checkmate.example.com/")
+        return CheckmateClient(host="http://checkmate.example.com/", api_key="API_KEY")
 
     @pytest.fixture
     def response(self, requests):

@@ -53,7 +53,7 @@ class CheckmateClient:
             self._host + "/api/check",
             params=params,
             timeout=1,
-            auth=(self._api_key,) if self._api_key else None,
+            auth=(self._api_key, "") if self._api_key else None,
         )
 
         response.raise_for_status()

@@ -23,7 +23,7 @@ class TestCheckmateClient:
             "http://checkmate.example.com/api/check",
             params={"url": "http://bad.example.com"},
             timeout=1,
-            auth=("API_KEY",),
+            auth=("API_KEY", ""),
         )
 
         assert hits == BlockResponse.return_value

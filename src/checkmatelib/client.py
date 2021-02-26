@@ -27,7 +27,9 @@ class CheckmateClient:
         self._api_key = api_key
 
     @handles_request_errors
-    def check_url(self, url, allow_all=False, blocked_for=None):
+    def check_url(  # pylint: disable=inconsistent-return-statements
+        self, url, allow_all=False, blocked_for=None
+    ):
         """Check a URL for reasons to block.
 
         :param url: URL to check

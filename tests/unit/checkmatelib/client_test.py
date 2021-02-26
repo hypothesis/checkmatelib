@@ -34,6 +34,11 @@ class TestCheckmateClient:
 
         assert requests.get.call_args[1]["params"].get("allow_all")
 
+    def test_blocked_for(self, client, requests):
+        client.check_url("http://bad.example.com", blocked_for="lms")
+
+        assert requests.get.call_args[1]["params"].get("blocked_for")
+
     @pytest.mark.parametrize(
         "exception,expected",
         (

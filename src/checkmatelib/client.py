@@ -28,13 +28,14 @@ class CheckmateClient:
 
     @handles_request_errors
     def check_url(  # pylint: disable=inconsistent-return-statements
-        self, url, allow_all=False, blocked_for=None
+        self, url, allow_all=False, blocked_for=None, ignore_reasons=None
     ):
         """Check a URL for reasons to block.
 
         :param url: URL to check
         :param allow_all: If True, bypass Checkmate's allow-list
         :param blocked_for: Sets a context for the blocked pages layout/content
+        :param ignore_reasons: Ignore this class of detections. Comma separated reasons.
 
         :raises BadURL: If the provided URL is bad
         :raises CheckmateServiceError: If there is a problem contacting the service
@@ -54,6 +55,9 @@ class CheckmateClient:
 
         if blocked_for:
             params["blocked_for"] = blocked_for
+
+        if ignore_reasons:
+            params["ignore_reasons"] = ignore_reasons
 
         response = requests.get(
             self._host + "/api/check",

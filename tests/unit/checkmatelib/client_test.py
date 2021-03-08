@@ -39,6 +39,12 @@ class TestCheckmateClient:
 
         assert requests.get.call_args[1]["params"].get("blocked_for")
 
+    def test_ignore_reasons(self, client, requests):
+        reasons = "reason1,reason2"
+        client.check_url("http://bad.example.com", ignore_reasons=reasons)
+
+        assert requests.get.call_args[1]["params"]["ignore_reasons"] == reasons
+
     @pytest.mark.parametrize(
         "exception,expected",
         (

@@ -1,5 +1,11 @@
 import os
-from configparser import ConfigParser
+
+try:
+    from configparser import ConfigParser
+except ImportError:
+    # Python 2.7 support
+    ConfigParser = None
+    from setuptools.config import read_configuration
 
 from setuptools import find_packages, setup
 
@@ -89,8 +95,13 @@ class Package:
         return self.version + ".dev0"
 
 
-config = ConfigParser()
-config.read("setup.cfg")
+if ConfigParser:
+    config = ConfigParser()
+    config.read("setup.cfg")
+else:
+    # Python 2.7 support
+    config = read_configuration("setup.cfg")
+
 package = Package(config)
 
 setup(

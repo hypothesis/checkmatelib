@@ -8,7 +8,6 @@
             "README.md",
             "setup.cfg",
             "src/checkmatelib/__init__.py",
-            "Makefile",
             "MANIFEST.in",
             ".python-version",
             "tests/conftest.py"

@@ -7,6 +7,7 @@
         "disable_replay": [
             "README.md",
             "setup.cfg",
+            "setup.py",
             "src/checkmatelib/__init__.py",
             "MANIFEST.in",
             ".python-version",

@@ -43,6 +43,9 @@ fi
 # Loop over every $python_version in the .python-version file.
 while IFS= read -r python_version
 do
+    # Strip comments from the end of versions
+    python_version=`echo $python_version | sed -e 's/\s*#[^!].*$//'`
+
     # Install this version of Python in pyenv if it's not installed already.
     pyenv install --skip-existing "$python_version"
 

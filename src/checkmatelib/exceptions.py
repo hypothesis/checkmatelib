@@ -1,7 +1,6 @@
 """Exceptions for the Checkmate client."""
 from functools import wraps
 
-from future.utils import raise_from  # Python 2.7 compatibility
 from requests import exceptions
 
 REQUESTS_BAD_URL = (
@@ -40,12 +39,12 @@ def handles_request_errors(inner):
             return inner(*args, **kwargs)
 
         except REQUESTS_BAD_URL as err:
-            raise_from(BadURL(err.args[0]), err)
+            raise BadURL(err.args[0]) from err
 
         except REQUESTS_UPSTREAM_SERVICE as err:
-            raise_from(CheckmateServiceError(err.args[0]), err)
+            raise CheckmateServiceError(err.args[0]) from err
 
         except exceptions.RequestException as err:
-            raise_from(CheckmateException(err.args[0]), err)
+            raise CheckmateException(err.args[0]) from err
 
     return deco

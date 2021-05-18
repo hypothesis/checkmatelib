@@ -1,7 +1,6 @@
 """A client for the Checkmate URL testing service."""
 
 import requests
-from future.utils import raise_from  # Python 2.7 compatibility
 
 from checkmatelib._response import BlockResponse
 from checkmatelib.exceptions import CheckmateServiceError, handles_request_errors
@@ -75,4 +74,4 @@ class CheckmateClient:
             return BlockResponse(response.json())
 
         except ValueError as err:
-            raise_from(CheckmateServiceError("Unprocessable JSON response"), err)
+            raise CheckmateServiceError("Unprocessable JSON response") from err

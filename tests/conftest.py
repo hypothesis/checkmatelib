@@ -1,10 +1,5 @@
 import functools
-
-try:
-    from unittest import mock
-except ImportError:
-    import mock  # Python 2.7 compatibility
-
+from unittest import mock
 
 import pytest
 

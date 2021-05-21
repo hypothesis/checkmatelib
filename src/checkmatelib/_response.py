@@ -2,8 +2,8 @@
 
 import json
 
+import importlib_resources
 from jsonschema import Draft7Validator
-from pkg_resources import resource_string
 
 from checkmatelib.exceptions import CheckmateException
 
@@ -12,7 +12,11 @@ class BlockResponse:
     """A response from the Checkmate service with reasons to block."""
 
     VALIDATOR = Draft7Validator(
-        json.loads(resource_string("checkmatelib", "resource/response_schema.json"))
+        json.loads(
+            importlib_resources.read_binary(
+                "checkmatelib.resource", "response_schema.json"
+            )
+        )
     )
 
     def __init__(self, payload):

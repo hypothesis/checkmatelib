@@ -35,7 +35,7 @@ class TestBlockResponse:
     def test_it_stringifies(self, payload):
         response = BlockResponse(payload)
 
-        assert repr(response) == "BlockResponse({})".format(payload)
+        assert repr(response) == f"BlockResponse({payload})"
 
     @pytest.fixture
     def payload(self):

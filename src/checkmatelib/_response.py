@@ -13,9 +13,10 @@ class BlockResponse:
 
     VALIDATOR = Draft7Validator(
         json.loads(
-            importlib_resources.read_binary(
-                "checkmatelib.resource", "response_schema.json"
-            )
+            (
+                importlib_resources.files("checkmatelib.resource")
+                / "response_schema.json"
+            ).read_bytes()
         )
     )
 
@@ -26,7 +27,7 @@ class BlockResponse:
         :param payload: Decoded JSON response from the Checkmate service.
         """
         for error in self.VALIDATOR.iter_errors(payload):
-            raise CheckmateException("Unparseable response: {}".format(error))
+            raise CheckmateException(f"Unparseable response: {error}")
 
         self._payload = payload
 
@@ -41,4 +42,4 @@ class BlockResponse:
         return [reason["id"] for reason in self._payload["data"]]
 
     def __repr__(self):
-        return "BlockResponse({})".format(repr(self._payload))
+        return f"BlockResponse({repr(self._payload)})"

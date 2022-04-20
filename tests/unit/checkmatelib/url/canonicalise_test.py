@@ -4,8 +4,10 @@ from checkmatelib.exceptions import BadURL
 from checkmatelib.url.canonicalize import CanonicalURL
 
 
+# pylint: disable=line-too-long
 class TestCanonicalURL:
-    # Taken from: https://cloud.google.com/web-risk/docs/urls-hashing#to_canonicalize_the_path
+    # Taken from:
+    # https://cloud.google.com/web-risk/docs/urls-hashing#to_canonicalize_the_path
     # With some extras of our own
     @pytest.mark.parametrize(
         "url,canonical_url",

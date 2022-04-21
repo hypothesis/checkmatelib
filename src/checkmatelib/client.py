@@ -17,6 +17,10 @@ class CheckmateClient:
     """A client for the Checkmate URL testing service."""
 
     MAX_URL_LENGTH = 2000
+    """The length we will truncate all URLs to before checking."""
+
+    ALLOWED_PRIVATE_DOMAINS = {"localhost", "127.0.0.1", "0.0.0.0"}
+    """Private domains which we don't block."""
 
     def __init__(self, host, api_key):
         """Initialise a client for contacting the Checkmate service.
@@ -94,7 +98,7 @@ class CheckmateClient:
 
         # Enforce that domains are valid and public
         domain = Domain(parts[1])
-        if not domain.is_public:
+        if domain not in cls.ALLOWED_PRIVATE_DOMAINS and not domain.is_public:
             raise BadURL(f"The domain '{domain}' does not look publicly accessible")
 
         return CanonicalURL.canonical_join(parts)

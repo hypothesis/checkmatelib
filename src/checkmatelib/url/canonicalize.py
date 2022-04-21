@@ -24,12 +24,26 @@ class CanonicalURL:
         :param url: URL to normalise
         :return: A normalised version of the URL
         """
-        parts = cls.canonical_split(url)
-        clean_url = urlunparse(parts)
+        return cls.canonical_join(cls.canonical_split(url))
+
+    @classmethod
+    def canonical_join(cls, parts):
+        """Join canonical parts into a URL.
+
+        This assumes you have called `canonical_split` to get the parts, and
+        does not perform any cleaning itself. The fragment is always ignored,
+        but is present to support the same interface as `urllib`
+
+        :param parts: Tuple of (scheme, netloc, path, params, query, fragment)
+        :return: A single URL string
+        """
+        scheme, netloc, path, params, query, _fragment = parts
+
+        clean_url = urlunparse([scheme, netloc, path, params, query, None])
 
         # Get around the fact that URL parse strips off the '?' if the query
         # string is empty
-        if url.endswith("?") and not clean_url.endswith("?"):
+        if not query and query is not None:
             clean_url += "?"
 
         return clean_url
@@ -52,7 +66,12 @@ class CanonicalURL:
         # 127, #, or %. The escapes should use uppercase hex characters.
         netloc = cls._partial_quote(netloc)
         path = cls._partial_quote(path)
+
+        # Make a distinction between an empty query and no query at all. This
+        # relies on us not having a fragment
         query = cls._partial_quote(query)
+        if not query:
+            query = "" if url.endswith("?") else None
 
         return scheme, netloc, path, params, query, None
 

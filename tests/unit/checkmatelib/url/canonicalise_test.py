@@ -102,13 +102,47 @@ class TestCanonicalURL:
 
         assert result == canonical_url
 
-    def test_canonical_split(self):
-        # We don't need to go nuts here, as this is well covered above
+    @pytest.mark.parametrize(
+        "url,expected_parts",
+        (
+            # This is well covered by the tests above, so we'll only cover some
+            # of the split specific edge cases
+            (
+                "http:/example.com/path/abc;path_param?a=b#frag",
+                ("http", "example.com", "/path/abc", "path_param", "a=b", None),
+            ),
+            (
+                "http://example.com",
+                ("http", "example.com", "/", "", None, None),
+            ),
+            (
+                "http://example.com?",
+                ("http", "example.com", "/", "", "", None),
+            ),
+        ),
+    )
+    def test_canonical_split(self, url, expected_parts):
+        assert CanonicalURL.canonical_split(url) == expected_parts
 
-        parts = CanonicalURL.canonical_split(
-            "http:/example.com/path/abc;path_param?a=b#foo"
-        )
-        assert parts == ("http", "example.com", "/path/abc", "path_param", "a=b", None)
+    @pytest.mark.parametrize(
+        "parts,expected_url",
+        (
+            (
+                ("http", "example.com", "/path/abc", "path_param", "a=b", "#frag"),
+                "http://example.com/path/abc;path_param?a=b",
+            ),
+            (
+                ("http", "example.com", "/", "", None, None),
+                "http://example.com/",
+            ),
+            (
+                ("http", "example.com", "/", "", "", None),
+                "http://example.com/?",
+            ),
+        ),
+    )
+    def test_canonical_join(self, parts, expected_url):
+        assert CanonicalURL.canonical_join(parts) == expected_url
 
     def test_canonicalise_invalid(self):
         with pytest.raises(BadURL):

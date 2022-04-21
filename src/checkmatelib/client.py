@@ -3,11 +3,16 @@
 import requests
 
 from checkmatelib._response import BlockResponse
-from checkmatelib.exceptions import CheckmateServiceError, handles_request_errors
+from checkmatelib.exceptions import (
+    BadURL,
+    CheckmateServiceError,
+    handles_request_errors,
+)
+from checkmatelib.url.canonicalize import CanonicalURL
+from checkmatelib.url.domain import Domain
+
 
 # pylint: disable=too-few-public-methods
-
-
 class CheckmateClient:
     """A client for the Checkmate URL testing service."""
 
@@ -34,20 +39,18 @@ class CheckmateClient:
         :param url: URL to check
         :param allow_all: If True, bypass Checkmate's allow-list
         :param blocked_for: Sets a context for the blocked pages layout/content
-        :param ignore_reasons: Ignore this class of detections. Comma separated reasons.
+        :param ignore_reasons: Ignore this class of detections. Comma separated
+            reasons.
 
         :raises BadURL: If the provided URL is bad
-        :raises CheckmateServiceError: If there is a problem contacting the service
-        :raises CheckmateException: For any other issue with the Checkmate service
+        :raises CheckmateServiceError: For problems contacting the service
+        :raises CheckmateException: For any other issue with Checkmate
 
         :return: None if the URL is fine or a `CheckmateResponse` if there are
            reasons to block the URL.
         """
 
-        # Truncate extremely long URLs so we don't get 400's and fail open
-        url = url[: self.MAX_URL_LENGTH]
-
-        params = {"url": url}
+        params = {"url": self._clean_url(url)}
 
         if allow_all:
             params["allow_all"] = True
@@ -68,6 +71,7 @@ class CheckmateClient:
         response.raise_for_status()
 
         if response.status_code == 204:
+            # No news is good news
             return None
 
         try:
@@ -75,3 +79,22 @@ class CheckmateClient:
 
         except ValueError as err:
             raise CheckmateServiceError("Unprocessable JSON response") from err
+
+    @classmethod
+    def _clean_url(cls, url):
+        """Clean the URL before we send it.
+
+        Checkmate will do this for itself, and doesn't trust our input, but
+        this allows us to fail fast for bad URLs, before Checkmate has a chance
+        to check them. We can also apply extra constraints.
+        """
+
+        # Truncate extremely long URLs, so we don't get 400's and fail open
+        parts = CanonicalURL.canonical_split(url[: cls.MAX_URL_LENGTH])
+
+        # Enforce that domains are valid and public
+        domain = Domain(parts[1])
+        if not domain.is_public:
+            raise BadURL(f"The domain '{domain}' does not look publicly accessible")
+
+        return CanonicalURL.canonical_join(parts)

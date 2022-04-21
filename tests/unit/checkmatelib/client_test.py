@@ -21,7 +21,7 @@ class TestCheckmateClient:
 
         requests.get.assert_called_once_with(
             "http://checkmate.example.com/api/check",
-            params={"url": "http://bad.example.com"},
+            params={"url": "http://bad.example.com/"},
             timeout=1,
             auth=("API_KEY", ""),
         )
@@ -70,8 +70,27 @@ class TestCheckmateClient:
         with pytest.raises(CheckmateException):
             client.check_url("http://bad.example.com")
 
+    @pytest.mark.parametrize("prefix", ("http://", ""))
+    @pytest.mark.parametrize("path", ("/path", ""))
+    @pytest.mark.parametrize(
+        "bad_url",
+        (
+            # Local things
+            "127.0.0.1",
+            "localhost",
+            # Not public domains
+            "my_private_name",
+            "index.php",
+            # Malformed URL (confused for IPV6)
+            "example.com]",
+        ),
+    )
+    def test_it_with_bad_domains(self, client, prefix, bad_url, path):
+        with pytest.raises(BadURL):
+            client.check_url(prefix + bad_url + path)
+
     def test_it_truncates_very_long_urls(self, client, requests):
-        very_long_url = "http://" + "a" * 10000
+        very_long_url = "http://example.com/" + "a" * 10000
 
         client.check_url(very_long_url)
 

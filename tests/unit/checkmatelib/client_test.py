@@ -70,24 +70,34 @@ class TestCheckmateClient:
         with pytest.raises(CheckmateException):
             client.check_url("http://bad.example.com")
 
+    # pylint: disable=too-many-arguments
     @pytest.mark.parametrize("prefix", ("http://", ""))
     @pytest.mark.parametrize("path", ("/path", ""))
     @pytest.mark.parametrize(
-        "bad_url",
+        "domain,allowed",
         (
-            # Local things
-            "127.0.0.1",
-            "localhost",
+            # Local things we allow
+            ("localhost", True),
+            ("127.0.0.1", True),
+            ("0177.0000.0000.0001", True),  # 127.0.0.1 in octal
+            ("0.0.0.0", True),
+            # Local things we don't
+            ("192.168.0.1", False),
             # Not public domains
-            "my_private_name",
-            "index.php",
+            ("my_private_name", False),
+            ("index.php", False),
             # Malformed URL (confused for IPV6)
-            "example.com]",
+            ("example.com]", False),
         ),
     )
-    def test_it_with_bad_domains(self, client, prefix, bad_url, path):
-        with pytest.raises(BadURL):
-            client.check_url(prefix + bad_url + path)
+    def test_it_with_private_domains(self, client, prefix, domain, path, allowed):
+        url = prefix + domain + path
+
+        if allowed:
+            client.check_url(url)
+        else:
+            with pytest.raises(BadURL):
+                client.check_url(url)
 
     def test_it_truncates_very_long_urls(self, client, requests):
         very_long_url = "http://example.com/" + "a" * 10000

@@ -46,7 +46,7 @@ class CheckmateClient:
         :param ignore_reasons: Ignore this class of detections. Comma separated
             reasons.
 
-        :raises BadURL: If the provided URL is bad
+        :raises BadURL: If the provided URL is unparseable or inaccessible
         :raises CheckmateServiceError: For problems contacting the service
         :raises CheckmateException: For any other issue with Checkmate
 
@@ -88,12 +88,18 @@ class CheckmateClient:
     def _clean_url(cls, url):
         """Clean the URL before we send it.
 
-        Checkmate will do this for itself, and doesn't trust our input, but
-        this allows us to fail fast for bad URLs, before Checkmate has a chance
-        to check them. We can also apply extra constraints.
+        This applies the same canonicalization to the URL as we do when the
+        real check happens in Checkmate. This means anything which will cause
+        Checkmate to raise `BadURL` will cause us to raise first, saving some
+        time.
+
+        We also apply a check that the domain must be public, baring some
+        domains used for local testing. There's no point in going to Checkmate
+        for private URLs; we can't access them to display them.
         """
 
-        # Truncate extremely long URLs, so we don't get 400's and fail open
+        # Truncate extremely long URLs, so we don't get 400's back from any
+        # intermediate services like NGINX or Cloudflare and fail open
         parts = CanonicalURL.canonical_split(url[: cls.MAX_URL_LENGTH])
 
         # Enforce that domains are valid and public

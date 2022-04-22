@@ -1,3 +1,5 @@
+from urllib.parse import ParseResult
+
 import pytest
 
 from checkmatelib.exceptions import BadURL
@@ -109,15 +111,17 @@ class TestCanonicalURL:
             # of the split specific edge cases
             (
                 "http:/example.com/path/abc;path_param?a=b#frag",
-                ("http", "example.com", "/path/abc", "path_param", "a=b", None),
+                ParseResult(
+                    "http", "example.com", "/path/abc", "path_param", "a=b", None
+                ),
             ),
             (
                 "http://example.com",
-                ("http", "example.com", "/", "", None, None),
+                ParseResult("http", "example.com", "/", "", None, None),
             ),
             (
                 "http://example.com?",
-                ("http", "example.com", "/", "", "", None),
+                ParseResult("http", "example.com", "/", "", "", None),
             ),
         ),
     )
@@ -128,15 +132,17 @@ class TestCanonicalURL:
         "parts,expected_url",
         (
             (
-                ("http", "example.com", "/path/abc", "path_param", "a=b", "#frag"),
+                ParseResult(
+                    "http", "example.com", "/path/abc", "path_param", "a=b", "#frag"
+                ),
                 "http://example.com/path/abc;path_param?a=b",
             ),
             (
-                ("http", "example.com", "/", "", None, None),
+                ParseResult("http", "example.com", "/", "", None, None),
                 "http://example.com/",
             ),
             (
-                ("http", "example.com", "/", "", "", None),
+                ParseResult("http", "example.com", "/", "", "", None),
                 "http://example.com/?",
             ),
         ),

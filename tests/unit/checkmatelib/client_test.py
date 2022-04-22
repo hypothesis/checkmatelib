@@ -85,7 +85,11 @@ class TestCheckmateClient:
             ("192.168.0.1", False),
             # Not public domains
             ("my_private_name", False),
+            # An example seen in the wild during a hostile scan
             ("index.php", False),
+            # An example seen in the wild during a hostile scan which is also
+            # a valid domain name
+            ("index.pl", True),
             # Malformed URL (confused for IPV6)
             ("example.com]", False),
         ),

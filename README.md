@@ -19,6 +19,14 @@ if hits:
     print(hits.reason_codes)
 ```
 
+### Updating the data files
+
+You can refresh the domain information with the following command:
+
+```shell
+hdev run update-data
+```
+
 Hacking
 -------
 

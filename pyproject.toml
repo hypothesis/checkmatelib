@@ -7,3 +7,9 @@ project_type = "library"
 # "pip install") or false if no extras are required.
 # e.g. flask=1.2.3 --no-deps
 test_extras = false
+
+[tool.hdev.run]
+# Add custom commands accessible with `hdev run ...`
+
+update-data.command="./bin/run/update_data.sh"
+update-data.help="Download required data files for domain information"

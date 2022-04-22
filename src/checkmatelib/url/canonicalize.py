@@ -5,7 +5,7 @@ As defined here: https://cloud.google.com/web-risk/docs/urls-hashing#canonicaliz
 
 import os.path
 import re
-from urllib.parse import unquote, urlparse, urlunparse
+from urllib.parse import ParseResult, unquote, urlparse
 
 from netaddr import AddrFormatError, IPAddress
 
@@ -16,7 +16,7 @@ class CanonicalURL:
     """Implementation of Google Web Risk URL canonicalization."""
 
     @classmethod
-    def canonicalize(cls, url):
+    def canonicalize(cls, url) -> str:
         """Convert a URL to a canonical form for comparison.
 
         This may "invent" a scheme as necessary.
@@ -27,53 +27,49 @@ class CanonicalURL:
         return cls.canonical_join(cls.canonical_split(url))
 
     @classmethod
-    def canonical_join(cls, parts):
+    def canonical_join(cls, parts: ParseResult) -> str:
         """Join canonical parts into a URL.
 
         This assumes you have called `canonical_split` to get the parts, and
         does not perform any cleaning itself. The fragment is always ignored,
         but is present to support the same interface as `urllib`
 
-        :param parts: Tuple of (scheme, netloc, path, params, query, fragment)
+        :param parts: Parsed parts of the URL
         :return: A single URL string
         """
-        scheme, netloc, path, params, query, _fragment = parts
-
-        clean_url = urlunparse([scheme, netloc, path, params, query, None])
+        clean_url = parts._replace(fragment=None).geturl()
 
         # Get around the fact that URL parse strips off the '?' if the query
         # string is empty
-        if not query and query is not None:
+        if not parts.query and parts.query is not None:
             clean_url += "?"
 
         return clean_url
 
     @classmethod
-    def canonical_split(cls, url):
+    def canonical_split(cls, url) -> ParseResult:
         """Split a URL into canonical parts.
 
         Note the fragment is always `None`. It is only returned for
         compatibility with the arguments of `urllib.parse.urlunparse()`
-
-        :return: Tuple of (scheme, netloc, path, params, query, fragment)
         """
-        scheme, netloc, path, params, query = cls._pre_process_url(url)
-
-        netloc = cls._canonicalize_host(netloc)
-        path = cls._canonicalize_path(path)
-
-        # In the URL, percent-escape all characters that are <= ASCII 32, >=
-        # 127, #, or %. The escapes should use uppercase hex characters.
-        netloc = cls._partial_quote(netloc)
-        path = cls._partial_quote(path)
+        url_parts = cls._pre_process_url(url)
 
         # Make a distinction between an empty query and no query at all. This
         # relies on us not having a fragment
-        query = cls._partial_quote(query)
-        if not query:
-            query = "" if url.endswith("?") else None
+        query = cls._partial_quote(url_parts.query)
+        query = query if query else "" if url.endswith("?") else None
 
-        return scheme, netloc, path, params, query, None
+        return ParseResult(
+            scheme=url_parts.scheme,
+            # In the URL, percent-escape all characters that are <= ASCII 32,
+            # >= 127, #, or %. The escapes should use uppercase hex characters
+            netloc=cls._partial_quote(cls._canonicalize_host(url_parts.netloc)),
+            path=cls._partial_quote(cls._canonicalize_path(url_parts.path)),
+            params=url_parts.params,
+            query=query,
+            fragment=None,
+        )
 
     BANNED_CHARS = re.compile("[\x09\x0d\x0a]")
     SCHEME_PREFIX = re.compile(r"^([A-z]+):/+")
@@ -116,11 +112,14 @@ class CanonicalURL:
         # Third, repeatedly remove percent-escapes from the URL until it has
         # no more percent-escapes.
 
-        netloc = cls._repeated_unquote(netloc)
-        path = cls._repeated_unquote(path)
-        query = cls._repeated_unquote(query)
-
-        return scheme, netloc, path, params, query
+        return ParseResult(
+            scheme=scheme,
+            netloc=cls._repeated_unquote(netloc),
+            path=cls._repeated_unquote(path),
+            params=params,
+            query=cls._repeated_unquote(query),
+            fragment=None,
+        )
 
     CONSECUTIVE_DOTS = re.compile(r"\.\.+")
     PORT = re.compile(r":\d+$")

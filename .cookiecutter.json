@@ -9,8 +9,10 @@
             "setup.cfg",
             "src/checkmatelib/__init__.py",
             "MANIFEST.in",
-            "tests/conftest.py"
+            "tests/conftest.py",
+            "pyproject.toml"
         ]
     },
-    "_template": "gh:hypothesis/h-cookiecutter-pypackage"
+    "_template": "gh:hypothesis/h-cookiecutter-pypackage",
+    "_output_dir": "/tmp/tmp2fxb3tkx"
 }

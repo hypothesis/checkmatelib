@@ -34,7 +34,7 @@ def handles_request_errors(inner):
     """Translate requests errors into our application errors."""
 
     @wraps(inner)
-    def deco(*args, **kwargs):  # pylint: disable=inconsistent-return-statements
+    def deco(*args, **kwargs):
         try:
             return inner(*args, **kwargs)
 

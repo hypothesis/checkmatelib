@@ -1,4 +1,3 @@
-
 [tool.hdev.run]
 # Add custom commands accessible with `hdev run ...`
 

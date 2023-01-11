@@ -2,7 +2,10 @@
   "template": "https://github.com/hypothesis/cookiecutters",
   "checkout": null,
   "directory": "pypackage",
-  "ignore": ["src/checkmatelib/core.py", "tests/unit/checkmatelib/core_test.py"],
+  "ignore": [
+    "src/checkmatelib/core.py",
+    "tests/unit/checkmatelib/core_test.py"
+  ],
   "extra_context": {
     "name": "checkmatelib",
     "package_name": "checkmatelib",
@@ -18,6 +21,7 @@
     "dependabot_pip_interval": "monthly",
     "__entry_point": "checkmatelib",
     "__github_url": "https://github.com/hypothesis/checkmatelib",
-    "__pypi_url": "https://pypi.org/project/checkmatelib"
+    "__pypi_url": "https://pypi.org/project/checkmatelib",
+    "__copyright_year": "2022"
   }
 }

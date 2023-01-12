@@ -1,4 +1,4 @@
-<a href="https://github.com/hypothesis/checkmatelib/actions/workflows/ci.yml?query=branch%3Amain"><img src="https://img.shields.io/github/workflow/status/hypothesis/checkmatelib/CI/main"></a>
+<a href="https://github.com/hypothesis/checkmatelib/actions/workflows/ci.yml?query=branch%3Amain"><img src="https://img.shields.io/github/actions/workflow/status/hypothesis/checkmatelib/ci.yml?branch=main"></a>
 <a href="https://pypi.org/project/checkmatelib"><img src="https://img.shields.io/pypi/v/checkmatelib"></a>
 <a><img src="https://img.shields.io/badge/python-3.9 | 3.8-success"></a>
 <a href="https://github.com/hypothesis/checkmatelib/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-BSD--2--Clause-success"></a>

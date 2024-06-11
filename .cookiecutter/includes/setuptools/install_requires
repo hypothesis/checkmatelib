@@ -1,4 +1,4 @@
 requests
 jsonschema
 importlib_resources
-netaddr
+netaddr>1.0.0

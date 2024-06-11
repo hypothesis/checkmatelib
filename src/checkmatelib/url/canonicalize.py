@@ -7,7 +7,7 @@ import os.path
 import re
 from urllib.parse import ParseResult, unquote, urlparse
 
-from netaddr import AddrFormatError, IPAddress
+from netaddr import INET_ATON, AddrFormatError, IPAddress
 
 from checkmatelib.exceptions import BadURL
 
@@ -180,7 +180,7 @@ class CanonicalURL:
     def _decode_ip(cls, hostname):
         """Try and spot hostnames that are really encoded IP addresses."""
         try:
-            return str(IPAddress(hostname))
+            return str(IPAddress(hostname, flags=INET_ATON))
         except (AddrFormatError, ValueError):
             return None
 

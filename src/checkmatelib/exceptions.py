@@ -1,4 +1,5 @@
 """Exceptions for the Checkmate client."""
+
 from functools import wraps
 
 from requests import exceptions

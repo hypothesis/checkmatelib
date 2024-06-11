@@ -1,4 +1,5 @@
 """An implementation of Google Web Risk suffix/prefix expressions."""
+
 import re
 from urllib.parse import urlparse
 

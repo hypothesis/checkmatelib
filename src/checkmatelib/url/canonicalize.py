@@ -37,7 +37,7 @@ class CanonicalURL:
         :param parts: Parsed parts of the URL
         :return: A single URL string
         """
-        clean_url = parts._replace(fragment=None).geturl()
+        clean_url = parts._replace(fragment="").geturl()
 
         # Get around the fact that URL parse strips off the '?' if the query
         # string is empty
@@ -68,7 +68,7 @@ class CanonicalURL:
             path=cls._partial_quote(cls._canonicalize_path(url_parts.path)),
             params=url_parts.params,
             query=query,
-            fragment=None,
+            fragment="",
         )
 
     BANNED_CHARS = re.compile("[\x09\x0d\x0a]")

@@ -112,16 +112,16 @@ class TestCanonicalURL:
             (
                 "http:/example.com/path/abc;path_param?a=b#frag",
                 ParseResult(
-                    "http", "example.com", "/path/abc", "path_param", "a=b", None
+                    "http", "example.com", "/path/abc", "path_param", "a=b", ""
                 ),
             ),
             (
                 "http://example.com",
-                ParseResult("http", "example.com", "/", "", None, None),
+                ParseResult("http", "example.com", "/", "", None, ""),
             ),
             (
                 "http://example.com?",
-                ParseResult("http", "example.com", "/", "", "", None),
+                ParseResult("http", "example.com", "/", "", "", ""),
             ),
         ),
     )

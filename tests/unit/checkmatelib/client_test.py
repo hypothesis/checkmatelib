@@ -70,7 +70,7 @@ class TestCheckmateClient:
         with pytest.raises(CheckmateException):
             client.check_url("http://bad.example.com")
 
-    # pylint: disable=too-many-arguments
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     @pytest.mark.parametrize("prefix", ("http://", ""))
     @pytest.mark.parametrize("path", ("/path", ""))
     @pytest.mark.parametrize(

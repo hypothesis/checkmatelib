@@ -20,5 +20,5 @@ if hits:
 You can refresh the domain information with the following command:
 
 ```shell
-hdev run update-data
+bin/run/update_data.sh
 ```

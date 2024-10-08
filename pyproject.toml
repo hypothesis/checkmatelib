@@ -159,11 +159,6 @@ module= [
 ]
 ignore_errors = true
 
-
-[tool.hdev]
-project_name = "checkmatelib"
-project_type = "library"
-
 [tool.hdev.run]
 # Add custom commands accessible with `hdev run ...`
 

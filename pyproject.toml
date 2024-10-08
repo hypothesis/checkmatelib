@@ -158,9 +158,3 @@ module= [
   "tests.*",
 ]
 ignore_errors = true
-
-[tool.hdev.run]
-# Add custom commands accessible with `hdev run ...`
-
-update-data.command="./bin/run/update_data.sh"
-update-data.help="Download required data files for domain information"

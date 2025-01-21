@@ -2,6 +2,29 @@
 requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
 build-backend = "setuptools.build_meta"
 
+[project]
+dynamic = ["version"]
+name = "checkmatelib"
+description = "Tools for interacting with the Checkmate URL checking service."
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: BSD License",
+    "Intended Audience :: Developers",
+]
+requires-python = ">=3.9"
+dependencies = [
+    "requests",
+    "jsonschema",
+    "importlib_resources",
+    "netaddr>1.0.0",
+]
+
+[project.urls]
+Repository = "https://github.com/hypothesis/checkmatelib"
+Issues = "https://github.com/hypothesis/checkmatelib/issues"
+Changelog = "https://github.com/hypothesis/checkmatelib/releases"
+
 [tool.setuptools_scm]
 
 [tool.pytest.ini_options]

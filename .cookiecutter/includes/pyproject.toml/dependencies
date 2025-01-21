@@ -1,0 +1,4 @@
+"requests",
+"jsonschema",
+"importlib_resources",
+"netaddr>1.0.0",

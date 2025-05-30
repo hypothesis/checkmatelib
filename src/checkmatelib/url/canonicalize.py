@@ -67,7 +67,7 @@ class CanonicalURL:
             netloc=cls._partial_quote(cls._canonicalize_host(url_parts.netloc)),
             path=cls._partial_quote(cls._canonicalize_path(url_parts.path)),
             params=url_parts.params,
-            query=query,
+            query=query,  # type: ignore[arg-type]
             fragment="",
         )
 
